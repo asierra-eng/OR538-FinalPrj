@@ -1,0 +1,34 @@
+---
+title: "Final Project"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+The first step is to create the dataset by pulling values and generating
+the rate of change of interest (i.e., log-returns)
+
+In this case we are going to use the stock prices for two companies in the
+information technology industry in particular the Data & Processing and
+outsourced services (i.e., Paycheck inc. and PayPal), one company in the
+Consumer Staples industry (i.e., Walmart), one market (i.e., S&P 500) and
+the risk-free rates for 2019 provided by the US Department of Treasury.
+
+
+
+```{r}
+pacman::p_load(quantmod)
+# Load prices from Yahoo finance
+PAYX_Raw <- getSymbols('PAYX', from = "2011-11-23", to = "2019-11-23")
+PYPL_Raw <- getSymbols('PYPL', from = "2011-11-23", to = "2019-11-23")
+WMT_Raw <- getSymbols('WMT', from = "2011-11-23", to = "2019-11-23")
+SP_Raw <- getSymbols('SP', from = "2011-11-23", to = "2019-11-23")
+Res_Raw <- getSymbols('CPIAUCNS', from = "2011-11-23", to = "2019-11-23", src='FRED')
+
+
+
+# AAPL_Adjusted <- AAPL$AAPL.Adjusted
+
+
+```
+
