@@ -17,18 +17,210 @@ the risk-free rates for 2019 provided by the US Department of Treasury.
 
 
 ```{r}
-pacman::p_load(quantmod)
+pacman::p_load(quantmod, tseries, qmao)
 # Load prices from Yahoo finance
-PAYX_Raw <- getSymbols('PAYX', from = "2011-11-23", to = "2019-11-23")
-PYPL_Raw <- getSymbols('PYPL', from = "2011-11-23", to = "2019-11-23")
-WMT_Raw <- getSymbols('WMT', from = "2011-11-23", to = "2019-11-23")
-SP_Raw <- getSymbols('SP', from = "2011-11-23", to = "2019-11-23")
-Res_Raw <- getSymbols('CPIAUCNS', from = "2011-11-23", to = "2019-11-23", src='FRED')
+# PAYX = PayCheck Inc.
+# PYPL = PayPal
+# WMT = WALMART
+# SP = S&P 500
+
+symbols <- c("PAYX", "PYPL", "WMT", "SP")
+
+getSymbols(symbols, from = "2017-11-23", to = "2019-11-23")
+
+
+df_adj <- data.frame(PAYX=PAYX$PAYX.Adjusted,
+                     PYPL=PYPL$PYPL.Adjusted,
+                     WMT=WMT$WMT.Adjusted,
+                     SP=SP$SP.Adjusted)
+colnames(df_adj) <- symbols
+
+df_ret <- data.frame(PAYX=diff(PAYX$PAYX.Adjusted),
+                     PYPL=diff(PYPL$PYPL.Adjusted),
+                     WMT=diff(WMT$WMT.Adjusted),
+                     SP=diff(SP$SP.Adjusted))
+colnames(df_ret) <- symbols
+
+df_log_ret <- data.frame(PAYX=diff(log(PAYX$PAYX.Adjusted)),
+                         PYPL=diff(log(PYPL$PYPL.Adjusted)),
+                         WMT=diff(log(WMT$WMT.Adjusted)),
+                         SP=diff(log(SP$SP.Adjusted)))
+colnames(df_log_ret) <- symbols
+
+#df_log_ret <- diff(log(ts(df_adj)))
+
+#Res_Raw <- getSymbols('CPIAUCNS', from = "2011-11-23", to = "2019-11-23", src='FRED')
 
 
 
 # AAPL_Adjusted <- AAPL$AAPL.Adjusted
+#auto.arima(TbGdpPi[,1],max.P=0,max.Q=0,ic="aic")
 
+# ccf(df_log_ret, lwd=3, ylab= "CCF", main="test")
 
 ```
 
+First question was to determine which of the 2 most common attributes to use 
+(i.e., returns or log returns))
+
+```{r}
+pdf("Figure1-price.pdf",height=7,width=8)
+plot(as.xts(df_adj), main="Adjusted Price", legend.loc = "topleft")
+graphics.off()
+
+plot(as.xts(df_adj), main="Adjusted Price", legend.loc = "topleft")
+```
+**Figure 1.** Time-Series plot for the Adjusted Price of PayCheck Inc, PayPal,
+Walmart and SP.
+
+At first glance we can observe quite some difference between the price values
+for the individual stocks and the market price.
+
+```{r}
+pdf("Figure2-returns.pdf",height=7,width=8)
+plot(as.xts(df_ret), main="Returns", legend.loc = "topleft")
+graphics.off()
+
+plot(as.xts(df_ret), main="Returns", legend.loc = "topleft")
+```
+**Figure 2.** Time-Series plot for the returns for PayCheck Inc, PayPal,
+Walmart and SP.
+
+The time-series starts to show a mean-reversion condition which is an indicator
+used to identify distributional invariance over time, or stationarity. However,
+it seems that we can't observe well the S&P 500 returns (i.e., blue lines).
+
+**Key Concept:** An important consideration when modeling time series is the
+principle of parsimony. This principle refers to representing the systematic
+structure of the series with as few parameters as possible. Essentially, this
+means simpler representations of a time series process are more desirable than
+more complex ones if both are adequate. (Chapter 2. Autoregressive Integrated
+Moving Average Models) (http://www.scausa.com/tsfbook.php#:~:targetText=An%20important%20consideration%20when%20modeling,as%20few%20parameters%20as%20possible.&targetText=This%20chapter%20examines%20seasonal%20time,are%20useful%20for%20such%20data)
+
+
+
+```{r}
+pdf("Figure3-log-returns.pdf",height=7,width=8)
+plot(as.xts(df_log_ret), main="Log Returns", legend.loc = "topleft")
+graphics.off()
+
+plot(as.xts(df_log_ret), main="Log Returns", legend.loc = "topleft")
+```
+**Figure 3.** Time-Series plot for the log returns for PayCheck Inc, Paypal,
+Walmart and SP.
+
+The time-series continues to show the mean-reversion condition and on top the
+color code for each security seems to be more evently distributed, including
+S&P 500.
+
+Since the log-returns seems to show better the parsimony principle; we will
+continue the analysis using the log-return transformation.
+
+
+# Are the time series stationary?
+
+```{r}
+pdf("Figure4-ACF-lag-default.pdf",height=7,width=8)
+par(mfrow=c(2,2))
+acf(df_log_ret[,"PAYX"], main="PayCheck Inc.", na.action = na.pass)
+acf(df_log_ret[,"PYPL"], main="PayPal", na.action = na.pass)
+acf(df_log_ret[,"WMT"], main="Walmart", na.action = na.pass)
+acf(df_log_ret[,"SP"], main="S&P 500", na.action = na.pass)
+graphics.off()
+
+par(mfrow=c(2,2))
+acf(df_log_ret[,"PAYX"], main="PayCheck Inc.", na.action = na.pass)
+acf(df_log_ret[,"PYPL"], main="PayPal", na.action = na.pass)
+acf(df_log_ret[,"WMT"], main="Walmart", na.action = na.pass)
+acf(df_log_ret[,"SP"], main="S&P 500", na.action = na.pass)
+```
+
+The auto corrleation function applied to each security decays to zero, clearly 
+indicating that the log-return series are stationary. However, PayPal security
+and S&P 500 present ocasions where the autocorrelation is outside the bounds
+which is an indication of non-stationary conditions.
+
+In particular the autocorrelation that crossed the test bound for S&P 500
+ocurred with a lag close to 15 and the autocorrelation that crossed the test
+bound for PayPal was at a lag of 20. This allow us to generalize by indicating
+that non of the securitiues autocorrelations at low lags (i.e., lower than 12)
+are outside the test bounds.
+
+**Reminder:**
+ * If the autocorrelation cross the test bound the hypothesis is rejected
+ * If the autocorrelation does not cross the test bound the hypothesis is not
+ rejected.
+
+```{r}
+pdf("Figure5-ACF-Lag-12.pdf",height=7,width=8)
+par(mfrow=c(2,2))
+acf(df_log_ret[,"PAYX"], lag.max = 12, main="PayCheck Inc.; Max Lag = 12", na.action = na.pass)
+acf(df_log_ret[,"PYPL"], lag.max = 12, main="PayPal; Max Lag = 12", na.action = na.pass)
+acf(df_log_ret[,"WMT"], lag.max = 12, main="Walmart; Max Lag = 12", na.action = na.pass)
+acf(df_log_ret[,"SP"], lag.max = 12, main="S&P 500; Max Lag = 12", na.action = na.pass)
+graphics.off()
+
+par(mfrow=c(2,2))
+acf(df_log_ret[,"PAYX"], lag.max = 12, main="PayCheck Inc.; Max Lag = 12", na.action = na.pass)
+acf(df_log_ret[,"PYPL"], lag.max = 12, main="PayPal; Max Lag = 12", na.action = na.pass)
+acf(df_log_ret[,"WMT"], lag.max = 12, main="Walmart; Max Lag = 12", na.action = na.pass)
+acf(df_log_ret[,"SP"], lag.max = 12, main="S&P 500; Max Lag = 12", na.action = na.pass)
+```
+
+The ACF plot for the securities were obtained with a max lag value of 12 and
+we can observe that in this case; we have no autocorrelation crossing the 
+test bound.
+
+# Fitting the Models with AR(1)
+
+**Note:** all the models are using the Maximum likelihood as the primary estimation
+method.
+
+```{r}
+fitPayxAr1 <- arima(df_log_ret[,"PAYX"], order = c(1,0,0))
+fitPyplAr1 <- arima(df_log_ret[,"PYPL"], order = c(1,0,0))
+fitWmtAr1 <- arima(df_log_ret[,"WMT"], order = c(1,0,0))
+fitSpAr1 <- arima(df_log_ret[,"SP"], order = c(1,0,0))
+
+Box.test(residuals(fitPayxAr1), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitPyplAr1), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitWmtAr1), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitSpAr1), lag = 5, type = "Ljung-Box", fitdf = 1)
+```
+
+# Forecasting the AR Models
+
+```{r}
+pred.payx <- predict(fitPayxAr1, n.ahead = 100, se.fit = TRUE)
+
+t1 = (503-99):503
+t2 = 504:(504+49+50)
+day_range = seq(-100,100,1)
+
+xts1 <- as.data.frame(df_log_ret)
+
+plot(day_range[1:100],xts1[t1,"PAYX"], type = "b", 
+     main = "Paycheck Inc Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.payx$pred,type="p",pch="*")
+lines(day_range[101:200], pred.payx$pred - 2*pred.payx$se)
+lines(day_range[101:200], pred.payx$pred + 2*pred.payx$se)
+legend(50,-0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+```
+
+ 
+```{r}
+pdf("Figure6-Forecast-Paycheck.pdf",height=7,width=8)
+plot(day_range[1:100],xts1[t1,"PAYX"], type = "b", 
+     main = "Paycheck Inc Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.payx$pred,type="p",pch="*")
+lines(day_range[101:200], pred.payx$pred - 2*pred.payx$se)
+lines(day_range[101:200], pred.payx$pred + 2*pred.payx$se)
+legend(50,-0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+graphics.off()
+```
+ 
+ 
