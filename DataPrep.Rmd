@@ -188,7 +188,7 @@ Box.test(residuals(fitWmtAr1), lag = 5, type = "Ljung-Box", fitdf = 1)
 Box.test(residuals(fitSpAr1), lag = 5, type = "Ljung-Box", fitdf = 1)
 ```
 
-# Forecasting the AR Models
+# Forecasting PayCheck AR Model
 
 ```{r}
 pred.payx <- predict(fitPayxAr1, n.ahead = 100, se.fit = TRUE)
@@ -207,11 +207,8 @@ lines(day_range[101:200], pred.payx$pred - 2*pred.payx$se)
 lines(day_range[101:200], pred.payx$pred + 2*pred.payx$se)
 legend(50,-0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
        box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
-```
 
- 
-```{r}
-pdf("Figure6-Forecast-Paycheck.pdf",height=7,width=8)
+pdf("Figure6-Forecast-Paycheck_AR1.pdf",height=7,width=8)
 plot(day_range[1:100],xts1[t1,"PAYX"], type = "b", 
      main = "Paycheck Inc Forecast", ylab = "log_return", xlab = "Days", 
      xlim = c(-100,100))
@@ -222,5 +219,451 @@ legend(50,-0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
        box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
 graphics.off()
 ```
+
+ 
+# Forecasting Paypal AR(1) Model
+ 
+```{r}
+pred.pypl <- predict(fitPyplAr1, n.ahead = 100, se.fit = TRUE)
+
+plot(day_range[1:100],xts1[t1,"PYPL"], type = "b", 
+     main = "Paypal Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.pypl$pred,type="p",pch="*")
+lines(day_range[101:200], pred.pypl$pred - 2*pred.pypl$se)
+lines(day_range[101:200], pred.pypl$pred + 2*pred.pypl$se)
+legend(50,0.085,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+pdf("Figure7-Forecast-Paypal_AR1.pdf",height=7,width=8)
+plot(day_range[1:100],xts1[t1,"PYPL"], type = "b", 
+     main = "Paypal Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.pypl$pred,type="p",pch="*")
+lines(day_range[101:200], pred.pypl$pred - 2*pred.pypl$se)
+lines(day_range[101:200], pred.pypl$pred + 2*pred.pypl$se)
+legend(50,-0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+graphics.off()
+```
  
  
+# Forecasting Walmart AR(1) Model
+ 
+```{r}
+pred.wmt <- predict(fitWmtAr1, n.ahead = 100, se.fit = TRUE)
+
+plot(day_range[1:100],xts1[t1,"WMT"], type = "b", 
+     main = "Walmart Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.wmt$pred,type="p",pch="*")
+lines(day_range[101:200], pred.wmt$pred - 2*pred.wmt$se)
+lines(day_range[101:200], pred.wmt$pred + 2*pred.wmt$se)
+legend(50,0.06,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+pdf("Figure8-Forecast-Walmart_AR1.pdf",height=7,width=8)
+plot(day_range[1:100],xts1[t1,"WMT"], type = "b", 
+     main = "Walmart Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.wmt$pred,type="p",pch="*")
+lines(day_range[101:200], pred.wmt$pred - 2*pred.wmt$se)
+lines(day_range[101:200], pred.wmt$pred + 2*pred.wmt$se)
+legend(50,0.06,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+graphics.off()
+```
+ 
+ 
+# Forecasting S&P 500 AR(1) Model
+ 
+```{r}
+pred.sp <- predict(fitSpAr1, n.ahead = 100, se.fit = TRUE)
+
+plot(day_range[1:100],xts1[t1,"SP"], type = "b", 
+     main = "S&P 500 Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.sp$pred,type="p",pch="*")
+lines(day_range[101:200], pred.sp$pred - 2*pred.sp$se)
+lines(day_range[101:200], pred.sp$pred + 2*pred.sp$se)
+legend(50,0.1,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+pdf("Figure9-Forecast-SP500_AR1.pdf",height=7,width=8)
+plot(day_range[1:100],xts1[t1,"SP"], type = "b", 
+     main = "S&P 500 Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.sp$pred,type="p",pch="*")
+lines(day_range[101:200], pred.sp$pred - 2*pred.sp$se)
+lines(day_range[101:200], pred.sp$pred + 2*pred.sp$se)
+legend(50,0.1,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+graphics.off()
+```
+
+
+```{r}
+pdf("Figure10-Forecast-All_AR1.pdf",height=7,width=8)
+par(mfrow=c(2,2))
+#
+plot(day_range[1:100],xts1[t1,"PAYX"], type = "b", 
+     main = "Paycheck Inc Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.payx$pred,type="p",pch="*")
+lines(day_range[101:200], pred.payx$pred - 2*pred.payx$se)
+lines(day_range[101:200], pred.payx$pred + 2*pred.payx$se)
+legend(25,0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+plot(day_range[1:100],xts1[t1,"PYPL"], type = "b", 
+     main = "Paypal Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.pypl$pred,type="p",pch="*")
+lines(day_range[101:200], pred.pypl$pred - 2*pred.pypl$se)
+lines(day_range[101:200], pred.pypl$pred + 2*pred.pypl$se)
+legend(25,0.09,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+plot(day_range[1:100],xts1[t1,"WMT"], type = "b", 
+     main = "Walmart Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.wmt$pred,type="p",pch="*")
+lines(day_range[101:200], pred.wmt$pred - 2*pred.wmt$se)
+lines(day_range[101:200], pred.wmt$pred + 2*pred.wmt$se)
+legend(25,0.06,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+plot(day_range[1:100],xts1[t1,"SP"], type = "b", 
+     main = "S&P 500 Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.sp$pred,type="p",pch="*")
+lines(day_range[101:200], pred.sp$pred - 2*pred.sp$se)
+lines(day_range[101:200], pred.sp$pred + 2*pred.sp$se)
+legend(25,0.1,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+graphics.off()
+```
+ 
+
+# Fitting the Models AR(p)
+
+```{r}
+pacman::p_load("forecast")
+
+fitPayxArpBic <- auto.arima(df_log_ret[,"PAYX"], max.p = 20, max.q = 0, ic = "bic")
+fitPyplArpBic <- auto.arima(df_log_ret[,"PYPL"], max.p = 20, max.q = 0, ic = "bic")
+fitWmtArpBic <- auto.arima(df_log_ret[,"WMT"], max.p = 20, max.q = 0, ic = "bic")
+fitSpArpBic <- auto.arima(df_log_ret[,"SP"], max.p = 20, max.q = 0, ic = "bic")
+
+fitPayxArpAic <- auto.arima(df_log_ret[,"PAYX"], max.p = 20, max.q = 0, ic = "bic")
+fitPyplArpAic <- auto.arima(df_log_ret[,"PYPL"], max.p = 20, max.q = 0, ic = "bic")
+fitWmtArpAic <- auto.arima(df_log_ret[,"WMT"], max.p = 20, max.q = 0, ic = "bic")
+fitSpArpAic <- auto.arima(df_log_ret[,"SP"], max.p = 20, max.q = 0, ic = "bic")
+
+Box.test(residuals(fitPayxArpBic), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitPayxArpAic), lag = 5, type = "Ljung-Box", fitdf = 1)
+
+Box.test(residuals(fitPyplArpBic), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitPyplArpAic), lag = 5, type = "Ljung-Box", fitdf = 1)
+
+Box.test(residuals(fitWmtArpBic), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitWmtArpAic), lag = 5, type = "Ljung-Box", fitdf = 1)
+
+Box.test(residuals(fitSpArpBic), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitSpArpAic), lag = 5, type = "Ljung-Box", fitdf = 1)
+```
+
+Below is the script to generate the forecast for all four securities only using AR(p) model and optimizing AIC.
+
+```{r}
+pred.payx.arp.aic <- predict(fitPayxArpAic, n.ahead = 100, se.fit = TRUE)
+pred.pypl.arp.aic <- predict(fitPyplArpAic, n.ahead = 100, se.fit = TRUE)
+pred.wmt.arp.aic <- predict(fitWmtArpAic, n.ahead = 100, se.fit = TRUE)
+pred.sp.arp.aic <- predict(fitSpArpAic, n.ahead = 100, se.fit = TRUE)
+
+pdf("Figure11-Forecast-All_ARp.pdf",height=7,width=8)
+par(mfrow=c(2,2))
+#
+plot(day_range[1:100],xts1[t1,"PAYX"], type = "b", 
+     main = "Paycheck Inc Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.payx.arp.aic$pred,type="p",pch="*")
+lines(day_range[101:200], pred.payx.arp.aic$pred - 2*pred.payx.arp.aic$se)
+lines(day_range[101:200], pred.payx.arp.aic$pred + 2*pred.payx.arp.aic$se)
+legend(25,0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+plot(day_range[1:100],xts1[t1,"PYPL"], type = "b", 
+     main = "Paypal Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.pypl.arp.aic$pred,type="p",pch="*")
+lines(day_range[101:200], pred.pypl.arp.aic$pred - 2*pred.pypl.arp.aic$se)
+lines(day_range[101:200], pred.pypl.arp.aic$pred + 2*pred.pypl.arp.aic$se)
+legend(25,0.09,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+plot(day_range[1:100],xts1[t1,"WMT"], type = "b", 
+     main = "Walmart Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.wmt.arp.aic$pred,type="p",pch="*")
+lines(day_range[101:200], pred.wmt.arp.aic$pred - 2*pred.wmt.arp.aic$se)
+lines(day_range[101:200], pred.wmt.arp.aic$pred + 2*pred.wmt.arp.aic$se)
+legend(25,0.06,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+plot(day_range[1:100],xts1[t1,"SP"], type = "b", 
+     main = "S&P 500 Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.sp.arp.aic$pred,type="p",pch="*")
+lines(day_range[101:200], pred.sp.arp.aic$pred - 2*pred.sp.arp.aic$se)
+lines(day_range[101:200], pred.sp.arp.aic$pred + 2*pred.sp.arp.aic$se)
+legend(25,0.1,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+graphics.off()
+```
+
+Below is the script to generate a figure that would allow us to compare the forecast created
+using the predictions for the AR(1) model and AR(p) model for the PayCheck Inc. and Paypal securities.
+
+```{r}
+pdf("Figure12-Forecast-Payx-Pypl_AR1_ARp.pdf",height=7,width=8)
+par(mfrow=c(2,2))
+#
+plot(day_range[1:100],xts1[t1,"PAYX"], type = "b", 
+     main = "Paycheck Inc Forecast - AR(p)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.payx.arp.aic$pred,type="p",pch="*")
+lines(day_range[101:200], pred.payx.arp.aic$pred - 2*pred.payx.arp.aic$se)
+lines(day_range[101:200], pred.payx.arp.aic$pred + 2*pred.payx.arp.aic$se)
+legend(25,0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+plot(day_range[1:100],xts1[t1,"PAYX"], type = "b", 
+     main = "Paycheck Inc Forecast - AR(1)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.payx$pred,type="p",pch="*")
+lines(day_range[101:200], pred.payx$pred - 2*pred.payx$se)
+lines(day_range[101:200], pred.payx$pred + 2*pred.payx$se)
+legend(25,0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+plot(day_range[1:100],xts1[t1,"PYPL"], type = "b", 
+     main = "Paypal Forecast - AR(p)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.pypl.arp.aic$pred,type="p",pch="*")
+lines(day_range[101:200], pred.pypl.arp.aic$pred - 2*pred.pypl.arp.aic$se)
+lines(day_range[101:200], pred.pypl.arp.aic$pred + 2*pred.pypl.arp.aic$se)
+legend(25,0.09,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+plot(day_range[1:100],xts1[t1,"PYPL"], type = "b", 
+     main = "Paypal Forecast - AR(1)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.pypl$pred,type="p",pch="*")
+lines(day_range[101:200], pred.pypl$pred - 2*pred.pypl$se)
+lines(day_range[101:200], pred.pypl$pred + 2*pred.pypl$se)
+legend(25,0.09,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+graphics.off()
+```
+
+Below is the script to generate a figure that would allow us to compare the forecast created
+using the predictions for the AR(1) model and AR(p) model for the Walmart and S&P 500 securities.
+
+```{r}
+pdf("Figure13-Forecast-Wmt-Sp_AR1_ARp.pdf",height=7,width=8)
+par(mfrow=c(2,2))
+#
+plot(day_range[1:100],xts1[t1,"WMT"], type = "b", 
+     main = "Walmart Forecast - AR(p)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.wmt.arp.aic$pred,type="p",pch="*")
+lines(day_range[101:200], pred.wmt.arp.aic$pred - 2*pred.wmt.arp.aic$se)
+lines(day_range[101:200], pred.wmt.arp.aic$pred + 2*pred.wmt.arp.aic$se)
+legend(25,0.06,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+plot(day_range[1:100],xts1[t1,"WMT"], type = "b", 
+     main = "Walmart Forecast - AR(1)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.wmt$pred,type="p",pch="*")
+lines(day_range[101:200], pred.wmt$pred - 2*pred.wmt$se)
+lines(day_range[101:200], pred.wmt$pred + 2*pred.wmt$se)
+legend(25,0.06,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+plot(day_range[1:100],xts1[t1,"SP"], type = "b", 
+     main = "S&P 500 Forecast - AR(p)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.sp.arp.aic$pred,type="p",pch="*")
+lines(day_range[101:200], pred.sp.arp.aic$pred - 2*pred.sp.arp.aic$se)
+lines(day_range[101:200], pred.sp.arp.aic$pred + 2*pred.sp.arp.aic$se)
+legend(25,0.1,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+plot(day_range[1:100],xts1[t1,"SP"], type = "b", 
+     main = "S&P 500 Forecast - AR(1)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.sp$pred,type="p",pch="*")
+lines(day_range[101:200], pred.sp$pred - 2*pred.sp$se)
+lines(day_range[101:200], pred.sp$pred + 2*pred.sp$se)
+legend(25,0.1,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+graphics.off()
+```
+
+# Fitting MA models using MA(3) and MA(q)
+
+```{r}
+fitPayxMa3 <- arima(df_log_ret[,"PAYX"], order = c(0,0,3))
+fitPyplMa3 <- arima(df_log_ret[,"PYPL"], order = c(0,0,3))
+fitWmtMa3 <- arima(df_log_ret[,"WMT"], order = c(0,0,3))
+fitSpMa3 <- arima(df_log_ret[,"SP"], order = c(0,0,3))
+
+fitPayxMaqAic <- auto.arima(df_log_ret[,"PAYX"], max.p = 0, max.q = 20, ic = "bic")
+fitPyplMaqAic <- auto.arima(df_log_ret[,"PYPL"], max.p = 0, max.q = 20, ic = "bic")
+fitWmtMaqAic <- auto.arima(df_log_ret[,"WMT"], max.p = 0, max.q = 20, ic = "bic")
+fitSpMaqAic <- auto.arima(df_log_ret[,"SP"], max.p = 0, max.q = 20, ic = "bic")
+
+Box.test(residuals(fitPayxMa3), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitPayxMaqAic), lag = 5, type = "Ljung-Box", fitdf = 1)
+
+Box.test(residuals(fitPyplMa3), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitPyplMaqAic), lag = 5, type = "Ljung-Box", fitdf = 1)
+
+Box.test(residuals(fitWmtMa3), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitWmtMaqAic), lag = 5, type = "Ljung-Box", fitdf = 1)
+
+Box.test(residuals(fitSpMa3), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitSpMaqAic), lag = 5, type = "Ljung-Box", fitdf = 1)
+```
+
+```{r}
+pred.payx.ma3 <- predict(fitPayxMa3, n.ahead = 100, se.fit = TRUE)
+pred.pypl.ma3 <- predict(fitPyplMa3, n.ahead = 100, se.fit = TRUE)
+pred.wmt.ma3 <- predict(fitWmtMa3, n.ahead = 100, se.fit = TRUE)
+pred.sp.ma3 <- predict(fitSpMa3, n.ahead = 100, se.fit = TRUE)
+
+pred.payx.maq.aic <- predict(fitPayxMaqAic, n.ahead = 100, se.fit = TRUE)
+pred.pypl.maq.aic <- predict(fitPyplMaqAic, n.ahead = 100, se.fit = TRUE)
+pred.wmt.maq.aic <- predict(fitWmtMaqAic, n.ahead = 100, se.fit = TRUE)
+pred.sp.maq.aic <- predict(fitSpMaqAic, n.ahead = 100, se.fit = TRUE)
+```
+
+```{r}
+pdf("Figure14-Forecast-Payx-Pypl_MA3_MAq.pdf",height=7,width=8)
+par(mfrow=c(2,2))
+#
+plot(day_range[1:100],xts1[t1,"PAYX"], type = "b", 
+     main = "Paycheck Inc Forecast - MA(3)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.payx.ma3$pred,type="p",pch="*")
+lines(day_range[101:200], pred.payx.ma3$pred - 2*pred.payx.ma3$se)
+lines(day_range[101:200], pred.payx.ma3$pred + 2*pred.payx.ma3$se)
+legend(25,0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+plot(day_range[1:100],xts1[t1,"PAYX"], type = "b", 
+     main = "Paycheck Inc Forecast - MA(q)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.payx.maq.aic$pred,type="p",pch="*")
+lines(day_range[101:200], pred.payx.maq.aic$pred - 2*pred.payx.maq.aic$se)
+lines(day_range[101:200], pred.payx.maq.aic$pred + 2*pred.payx.maq.aic$se)
+legend(25,0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+plot(day_range[1:100],xts1[t1,"PYPL"], type = "b", 
+     main = "Paypal Forecast - AR(p)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.pypl.ma3$pred,type="p",pch="*")
+lines(day_range[101:200], pred.pypl.ma3$pred - 2*pred.pypl.ma3$se)
+lines(day_range[101:200], pred.pypl.ma3$pred + 2*pred.pypl.ma3$se)
+legend(25,0.09,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+plot(day_range[1:100],xts1[t1,"PYPL"], type = "b", 
+     main = "Paypal Forecast - AR(1)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.pypl.maq.aic$pred,type="p",pch="*")
+lines(day_range[101:200], pred.pypl.maq.aic$pred - 2*pred.pypl.maq.aic$se)
+lines(day_range[101:200], pred.pypl.maq.aic$pred + 2*pred.pypl.maq.aic$se)
+legend(25,0.09,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+graphics.off()
+```
+
+```{r}
+pdf("Figure15-Forecast-Wmt-Sp_MA3_MAq.pdf",height=7,width=8)
+par(mfrow=c(2,2))
+#
+plot(day_range[1:100],xts1[t1,"WMT"], type = "b", 
+     main = "Walmart Forecast - MA(3)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.wmt.ma3$pred,type="p",pch="*")
+lines(day_range[101:200], pred.wmt.ma3$pred - 2*pred.wmt.ma3$se)
+lines(day_range[101:200], pred.wmt.ma3$pred + 2*pred.wmt.ma3$se)
+legend(25,0.06,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+plot(day_range[1:100],xts1[t1,"WMT"], type = "b", 
+     main = "Walmart Forecast - MA(q)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.wmt.maq.aic$pred,type="p",pch="*")
+lines(day_range[101:200], pred.wmt.maq.aic$pred - 2*pred.wmt.maq.aic$se)
+lines(day_range[101:200], pred.wmt.maq.aic$pred + 2*pred.wmt.maq.aic$se)
+legend(25,0.06,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+plot(day_range[1:100],xts1[t1,"SP"], type = "b", 
+     main = "S&P 500 Forecast - MA(3)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.sp.ma3$pred,type="p",pch="*")
+lines(day_range[101:200], pred.sp.ma3$pred - 2*pred.sp.ma3$se)
+lines(day_range[101:200], pred.sp.ma3$pred + 2*pred.sp.ma3$se)
+legend(25,0.1,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+plot(day_range[1:100],xts1[t1,"SP"], type = "b", 
+     main = "S&P 500 Forecast - MA(q)", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.sp.maq.aic$pred,type="p",pch="*")
+lines(day_range[101:200], pred.sp.maq.aic$pred - 2*pred.sp.maq.aic$se)
+lines(day_range[101:200], pred.sp.maq.aic$pred + 2*pred.sp.maq.aic$se)
+legend(25,0.1,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+graphics.off()
+```
+
+
+# Fitting ARMA models using ARMA(3,3) and ARMA(p,q)
+
+```{r}
+fitPayxArMa33 <- arima(df_log_ret[,"PAYX"], order = c(3,0,3))
+fitPyplArMa33 <- arima(df_log_ret[,"PYPL"], order = c(3,0,3))
+fitWmtArMa33 <- arima(df_log_ret[,"WMT"], order = c(3,0,3))
+fitSpArMa33 <- arima(df_log_ret[,"SP"], order = c(3,0,3))
+
+fitPayxArmapqAic <- auto.arima(df_log_ret[,"PAYX"], max.p = 20, max.q = 20, ic = "bic")
+fitPyplArmapqAic <- auto.arima(df_log_ret[,"PYPL"], max.p = 20, max.q = 20, ic = "bic")
+fitWmtArmapqAic <- auto.arima(df_log_ret[,"WMT"], max.p = 20, max.q = 20, ic = "bic")
+fitSpArmapqAic <- auto.arima(df_log_ret[,"SP"], max.p = 20, max.q = 20, ic = "bic")
+
+Box.test(residuals(fitPayxArma3), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitPayxMaqAic), lag = 5, type = "Ljung-Box", fitdf = 1)
+
+Box.test(residuals(fitPyplMa3), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitPyplMaqAic), lag = 5, type = "Ljung-Box", fitdf = 1)
+
+Box.test(residuals(fitWmtMa3), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitWmtMaqAic), lag = 5, type = "Ljung-Box", fitdf = 1)
+
+Box.test(residuals(fitSpMa3), lag = 5, type = "Ljung-Box", fitdf = 1)
+Box.test(residuals(fitSpMaqAic), lag = 5, type = "Ljung-Box", fitdf = 1)
+```
+
