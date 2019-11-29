@@ -1,0 +1,143 @@
+---
+title: "OR538 Final Project - Step 2: Data Pre-Processing"
+output: html_notebook
+---
+
+# Data Pre-Processing
+
+The intent of this section is to perform the necessary pre-processing for the time series values and leverage data visualization techniques to show the transformations and validate key assumptions around the time-series.
+
+```{r}
+folder <- "/Users/angelsierra/ML_Project/OR538-FinalPrj/Scripts/Figures/"
+pdf(file = paste(folder,"Figure1-Adjusted Price for Multiple Securities.pdf"),height=7,width=8)
+plot(as.xts(df_adj), main="Adjusted Price", legend.loc = "topleft")
+graphics.off()
+
+plot(as.xts(df_adj), main="Adjusted Price", legend.loc = "topleft")
+```
+**Figure 1:** Adjusted price plot for PayCheck Inc., PayPal, Walmart, and S&P 500 securities.
+
+Figure **1** plots the adjusted price for all the securities analyzed in this project. We can observe from this plot that the securities present significant differences between prices for each security and they do not present stationarity. 
+
+We will calculate the price difference for each adjusted price and observe if this would help with the two main concerns found when reviewing Figure **1**.
+
+```{r}
+pdf(file = paste(folder,"Figure2-Returns for Multiple Securities.pdf"),height=7,width=8)
+plot(as.xts(df_ret), main="Returns", legend.loc = "topleft")
+graphics.off()
+
+plot(as.xts(df_ret), main="Returns", legend.loc = "topleft")
+```
+**Figure 2:** Adjusted price returns plot for PayCheck Inc., PayPal, Walmart, and S&P 500 securities.
+
+Figure **2** plots the adjusted price returns for all the securities analyzed in this project. We can start observing mean-reversion, a common condition that validates the stationarity assumption. However, we can observe that the color distribution is not even between securities. For instance, we can see a heavier pressence in the time series for PayCheck, Paypal and Walmart but not so much for S&P 500. In an attempt to fix this differences we would employ the log transformation in all series.
+
+```{r}
+pdf(file = paste(folder,"Figure3-Log Returns for Multiple Securities.pdf"),height=7,width=8)
+plot(as.xts(df_log_ret), main="Log Returns", legend.loc = "topleft")
+graphics.off()
+
+plot(as.xts(df_log_ret), main="Log Returns", legend.loc = "topleft")
+```
+**Figure 3:** Adjusted price log returns plot for PayCheck Inc., PayPal, Walmart, and S&P 500 securities.
+
+Figure **3** plots the adjusted price log returns for all the securities analyzed in this project. In this transformation we can obser that the color distribution seems to be evenly distributed between the multiple securities analyzed in this project. For this reason, we will use the Adjusted Price log returns to train our models. 
+
+
+```{r}
+pdf(file = paste(folder,"Figure4-Returns vs.Log Returns.pdf"),height=7,width=8)
+par(mfrow=c(2,2))
+plot(as.xts(df_ret), main="Returns", legend.loc = "topleft")
+plot(as.xts(df_log_ret), main="Log Returns", legend.loc = "topleft")
+graphics.off()
+```
+**Note:** The above script was created to consolidate the returns and log-returns plot. This was created to allow side-by-side comparison between the two transformations.
+
+
+# Finding Outliers
+
+```{r}
+pdf(file = paste(folder, "Figure5-Box Plot for Multiple Securities.pdf"), height=7,width=8)
+boxplot(df_log_ret, main="Log Returns for Multiple Securities",
+        xlab="Security Symbol", ylab="Log Returns")
+graphics.off()
+
+
+boxplot(df_log_ret, main="Log Returns for Multiple Securities",
+        xlab="Security Symbol", ylab="Log Returns")
+```
+**Figure 5:** Box Plot for PayCheck Inc., PayPal, Walmart, and S&P 500 securities.
+
+Figure **5** allow us to observe that the full data set to be used are centered around zero. However, we can see a couple of outliers but to properly manage this outliers we may need to work with an investment subject matter expert.
+
+# Evaluate Time-series Autocorrelation
+
+```{r}
+pdf(file=paste(folder,"Figure6-ACF-lag-default.pdf"),height=7,width=8)
+par(mfrow=c(2,2))
+acf(df_log_ret[,"PAYX"], main="PayCheck Inc.", na.action = na.pass)
+acf(df_log_ret[,"PYPL"], main="PayPal", na.action = na.pass)
+acf(df_log_ret[,"WMT"], main="Walmart", na.action = na.pass)
+acf(df_log_ret[,"SP"], main="S&P 500", na.action = na.pass)
+graphics.off()
+
+par(mfrow=c(2,2))
+acf(df_log_ret[,"PAYX"], main="PayCheck Inc.", na.action = na.pass)
+acf(df_log_ret[,"PYPL"], main="PayPal", na.action = na.pass)
+acf(df_log_ret[,"WMT"], main="Walmart", na.action = na.pass)
+acf(df_log_ret[,"SP"], main="S&P 500", na.action = na.pass)
+```
+**Figure 6:** ACF for PayCheck Inc., PayPal, Walmart, and S&P 500 securities.
+
+Figure **6** allow us to validate that the adjusted price log returns for all the securities are stationary. Only lags greater than 12 start showing autocorrelations crossing the test lower bounds. 
+
+We can further inspect the autocorrelation for each one of these securities using the Ljung-Box test.
+
+```{r}
+# Paycheck Test
+PayxLbt11 <- Box.test(df_log_ret[,"PAYX"], lag = 11, type = "Ljung-Box")
+PayxLbt12 <- Box.test(df_log_ret[,"PAYX"], lag = 12, type = "Ljung-Box")
+PayxLbt13 <- Box.test(df_log_ret[,"PAYX"], lag = 13, type = "Ljung-Box")
+
+
+# Paypal Test
+PyplLbt11 <- Box.test(df_log_ret[,"PYPL"], lag = 11, type = "Ljung-Box")
+PyplLbt12 <- Box.test(df_log_ret[,"PYPL"], lag = 12, type = "Ljung-Box")
+PyplLbt13 <- Box.test(df_log_ret[,"PYPL"], lag = 13, type = "Ljung-Box")
+
+# Walmart Test
+WmtLbt11 <- Box.test(df_log_ret[,"WMT"], lag = 11, type = "Ljung-Box")
+WmtLbt12 <- Box.test(df_log_ret[,"WMT"], lag = 12, type = "Ljung-Box")
+WmtLbt13 <- Box.test(df_log_ret[,"WMT"], lag = 13, type = "Ljung-Box")
+
+
+# S&P Test
+SpLbt11 <- Box.test(df_log_ret[,"SP"], lag = 11, type = "Ljung-Box")
+SpLbt12 <- Box.test(df_log_ret[,"SP"], lag = 12, type = "Ljung-Box")
+SpLbt13 <- Box.test(df_log_ret[,"SP"], lag = 13, type = "Ljung-Box")
+
+lag11Results <- c(PayxLbt11$p.value, PyplLbt11$p.value, WmtLbt11$p.value, SpLbt11$p.value)
+lag12Results <- c(PayxLbt12$p.value, PyplLbt12$p.value, WmtLbt12$p.value, SpLbt12$p.value)
+lag13Results <- c(PayxLbt13$p.value, PyplLbt13$p.value, WmtLbt13$p.value, SpLbt13$p.value)
+
+dfLjungTest <- as.data.frame(rbind(lag11Results,lag12Results,lag13Results))
+
+colnames(dfLjungTest) <- c("PayCheck Inc.", "Paypal", "Walmart", "S&P 500")
+rownames(dfLjungTest) <- c("lag = 11", "lag = 12", "lag = 13")
+
+dfLjungTest
+```
+
+Inspection of the PayCheck Inc. security allow us to observe that the best p-value is obtained when the lag is set to 12. However, Paypal and Walmart securities seems to show increasing p-values with increased number of lag. In the case of the S&P 500 security case we observe that the p-values decreases with increased lag number.
+
+```{r}
+Box.test(df_log_ret[,"PAYX"], lag = 13, type = "Ljung-Box")
+Box.test(df_log_ret[,"PYPL"], lag = 13, type = "Ljung-Box")
+Box.test(df_log_ret[,"WMT"], lag = 13, type = "Ljung-Box")
+Box.test(df_log_ret[,"SP"], lag = 13, type = "Ljung-Box")
+```
+
+
+
+
+

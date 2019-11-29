@@ -1,0 +1,11 @@
+---
+title: "OR538 Final Project - Step 2: Data Modeling"
+output: html_notebook
+---
+
+# Modeling Paycheck Inc.
+
+In this section we will be applying AR, MA, ARMA and ARIMA modeling for the PayCheck Inc. security and evaluating the models by using Ljung-Box Test on the residuals of each model.
+
+## AR Modeling
+For the AR modeling we will be using the `auto.arima` function and setting the 
