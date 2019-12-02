@@ -1,0 +1,108 @@
+---
+title: "OR538 Final Project - Step 4: Forecasting"
+output: html_notebook
+---
+
+
+```{r}
+pred.payx <- predict(fitPayx, n.ahead = 100, se.fit = TRUE)
+pred.pypl <- predict(fitPypl, n.ahead = 100, se.fit = TRUE)
+pred.wmt <- predict(fitWmt, n.ahead = 100, se.fit = TRUE)
+pred.sp <- predict(fitSp, n.ahead = 100, se.fit = TRUE)
+
+t1 = (503-99):503
+t2 = 504:(504+49+50)
+day_range = seq(-100,100,1)
+
+plot(day_range[1:100],df_log_ret[t1,"PAYX"], type = "b", 
+     main = "Paycheck Inc Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.payx$pred,type="p",pch="*")
+lines(day_range[101:200], pred.payx$pred - 2*pred.payx$se)
+lines(day_range[101:200], pred.payx$pred + 2*pred.payx$se)
+legend(25,-0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+```
+
+
+```{r}
+plot(day_range[1:100],df_log_ret[t1,"PYPL"], type = "b", 
+     main = "Paypal Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.pypl$pred,type="p",pch="*")
+lines(day_range[101:200], pred.pypl$pred - 2*pred.pypl$se)
+lines(day_range[101:200], pred.pypl$pred + 2*pred.pypl$se)
+legend(50,0.085,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+
+```
+
+
+```{r}
+plot(day_range[1:100],df_log_ret[t1,"WMT"], type = "b", 
+     main = "Walmart Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.wmt$pred,type="p",pch="*")
+lines(day_range[101:200], pred.wmt$pred - 2*pred.wmt$se)
+lines(day_range[101:200], pred.wmt$pred + 2*pred.wmt$se)
+legend(50,0.06,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+```
+
+
+```{r}
+plot(day_range[1:100],df_log_ret[t1,"SP"], type = "b", 
+     main = "S&P 500 Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.sp$pred,type="p",pch="*")
+lines(day_range[101:200], pred.sp$pred - 2*pred.sp$se)
+lines(day_range[101:200], pred.sp$pred + 2*pred.sp$se)
+legend(50,0.1,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+```
+
+
+```{r}
+pdf(file = paste(folder,"Figure12-PayCheck Inc., Paypal, Walmart, and S&P 500.pdf"),height=7,width=8)
+par(mfrow=c(2,2))
+#
+plot(day_range[1:100],df_log_ret[t1,"PAYX"], type = "b", 
+     main = "Paycheck Inc Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.payx$pred,type="p",pch="*")
+lines(day_range[101:200], pred.payx$pred - 2*pred.payx$se)
+lines(day_range[101:200], pred.payx$pred + 2*pred.payx$se)
+legend(25,0.001,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+plot(day_range[1:100],df_log_ret[t1,"PYPL"], type = "b", 
+     main = "Paypal Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.pypl$pred,type="p",pch="*")
+lines(day_range[101:200], pred.pypl$pred - 2*pred.pypl$se)
+lines(day_range[101:200], pred.pypl$pred + 2*pred.pypl$se)
+legend(25,0.09,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+plot(day_range[1:100],df_log_ret[t1,"WMT"], type = "b", 
+     main = "Walmart Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.wmt$pred,type="p",pch="*")
+lines(day_range[101:200], pred.wmt$pred - 2*pred.wmt$se)
+lines(day_range[101:200], pred.wmt$pred + 2*pred.wmt$se)
+legend(25,0.06,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+plot(day_range[1:100],df_log_ret[t1,"SP"], type = "b", 
+     main = "S&P 500 Forecast", ylab = "log_return", xlab = "Days", 
+     xlim = c(-100,100))
+points(day_range[101:200], pred.sp$pred,type="p",pch="*")
+lines(day_range[101:200], pred.sp$pred - 2*pred.sp$se)
+lines(day_range[101:200], pred.sp$pred + 2*pred.sp$se)
+legend(25,0.1,c("data","predictions","lower CL","upper CL"),cex=0.9,
+       box.lty=0,pch=c("o","*",NA,NA),lty=c(NA,NA,1,1))
+#
+graphics.off()
+
+```
+

@@ -8,7 +8,7 @@ output: html_notebook
 The intent of this section is to perform the necessary pre-processing for the time series values and leverage data visualization techniques to show the transformations and validate key assumptions around the time-series.
 
 ```{r}
-folder <- "/Users/angelsierra/ML_Project/OR538-FinalPrj/Scripts/Figures/"
+folder <- "/Users/angelsierra/ML_Project/OR538-FinalPrj/Figures/"
 pdf(file = paste(folder,"Figure1-Adjusted Price for Multiple Securities.pdf"),height=7,width=8)
 plot(as.xts(df_adj), main="Adjusted Price", legend.loc = "topleft")
 graphics.off()
@@ -58,17 +58,28 @@ graphics.off()
 
 ```{r}
 pdf(file = paste(folder, "Figure5-Box Plot for Multiple Securities.pdf"), height=7,width=8)
+par(mfrow=c(2,2))
+boxplot(df_adj, main="Adjusted Price for Multiple Securities",
+        xlab="Security Symbol", ylab="Log Returns")
+boxplot(df_ret, main="Returns for Multiple Securities",
+        xlab="Security Symbol", ylab="Log Returns")
 boxplot(df_log_ret, main="Log Returns for Multiple Securities",
         xlab="Security Symbol", ylab="Log Returns")
 graphics.off()
 
 
+par(mfrow=c(2,2))
+boxplot(df_adj, main="Adjusted Price for Multiple Securities",
+        xlab="Security Symbol", ylab="Log Returns")
+boxplot(df_ret, main="Returns for Multiple Securities",
+        xlab="Security Symbol", ylab="Log Returns")
 boxplot(df_log_ret, main="Log Returns for Multiple Securities",
         xlab="Security Symbol", ylab="Log Returns")
 ```
 **Figure 5:** Box Plot for PayCheck Inc., PayPal, Walmart, and S&P 500 securities.
 
 Figure **5** allow us to observe that the full data set to be used are centered around zero. However, we can see a couple of outliers but to properly manage this outliers we may need to work with an investment subject matter expert.
+
 
 # Evaluate Time-series Autocorrelation
 
@@ -136,8 +147,3 @@ Box.test(df_log_ret[,"PYPL"], lag = 13, type = "Ljung-Box")
 Box.test(df_log_ret[,"WMT"], lag = 13, type = "Ljung-Box")
 Box.test(df_log_ret[,"SP"], lag = 13, type = "Ljung-Box")
 ```
-
-
-
-
-

@@ -1,0 +1,183 @@
+---
+title: "OR538 Final Project - Step 3: Data Modeling"
+output: html_notebook
+---
+
+# Modeling Paycheck Inc.
+
+In this section we will be applying AR, MA, ARMA and ARIMA modeling for the PayCheck Inc. security and evaluating the models by using Ljung-Box Test on the residuals of each model.
+
+
+```{r}
+pacman::p_load("forecast") # Library needed for auto.arima
+
+fitPayx <- auto.arima(df_log_ret[,"PAYX"], max.p = 20, max.q = 20, max.d = 20, ic = "aic")
+fitPypl <- auto.arima(df_log_ret[,"PYPL"], max.p = 20, max.q = 20, max.d = 20, ic = "aic")
+fitWmt <- auto.arima(df_log_ret[,"WMT"], max.p = 20, max.q = 20, max.d = 20, ic = "aic")
+fitSp <- auto.arima(df_log_ret[,"SP"], max.p = 20, max.q = 20, max.d = 20, ic = "aic")
+
+fitPayxRes <- c(round(fitPayx$bic,3), round(fitPayx$aic,3),
+                round(fitPayx$aicc,3), "ARIMA(0,0,0)")
+fitPyplRes <- c(round(fitPypl$bic,3), round(fitPypl$aic,3),
+                round(fitPypl$aicc,3), "ARIMA(1,0,1) = ARMA(1,1)")
+fitWmtRes <- c(round(fitWmt$bic,3), round(fitWmt$aic,3),
+               round(fitWmt$aicc,3), "ARIMA(0,0,0)")
+fitSpRes <- c(round(fitSp$bic,3), round(fitSp$aic,3),
+              round(fitSp$aicc,3), "ARIMA(0,0,0)")
+
+df_fit_results <- as.data.frame(rbind(fitPayxRes, fitPyplRes, fitWmtRes, fitSpRes))
+colnames(df_fit_results) <- c("BIC", "AIC", "AICc", "Model")
+rownames(df_fit_results) <- c("PayCheck Inc.", "Paypal", "Walmart", "S&P 500")
+
+df_fit_results
+```
+**Table 2:**
+
+Table **2** allow us to observe that only the Paypal securities needed a greater order to find the best ARIMA model.
+
+# PayCheck Inc. Training Model Observations
+
+```{r}
+pdf(file = paste(folder,"Figure7-PayCheck Model Results.pdf"),height=7,width=8)
+#
+par(mfrow=c(2,2))
+acf(df_log_ret[,"PAYX"], main="PayCheck Inc.", na.action = na.pass)
+acf(fitPayx$residual, main = "PayCheck Inc. Residuals", na.action = na.pass)
+qqnorm(fitPayx$resid, datax = T, main="PayCheck Inc. Residuals QQNorm") 
+qqline(fitPayx$resid, datax = T)
+plot(ts(fitPayx$resid),ylab="Residual",main="PayCheck Inc. Residuals Time-Series")
+#
+graphics.off()
+
+par(mfrow=c(2,2))
+
+acf(df_log_ret[,"PAYX"], main="PayCheck Inc.", na.action = na.pass)
+acf(fitPayx$residual, main = "PayCheck Inc. Residuals", na.action = na.pass)
+qqnorm(fitPayx$resid, datax = T, main="PayCheck Inc. Residuals QQNorm") 
+qqline(fitPayx$resid, datax = T)
+plot(ts(fitPayx$resid),ylab="Residual",main="PayCheck Inc. Residuals Time-Series")
+```
+**Figure 7:** PayCheck Training Model Validation
+
+PayCheck Inc. ACF plots presented in figure **7** confirms that the residuals follow the same autocorrelation than the original dataset. This similarity makes the ARIMA(0,0,0) a good model to be used for forecasting. 
+
+The QQnorm plot of PayCheck Inc. reiduals present heavy tails, a common characteristic of t-distributions. This behavior doesn't align with the expected normal distribution for residuals. 
+
+The time-series plot of PayCheck Inc. residuals shows some volatility; in particular around the 50th observation, and between the 250th and 300th time observation.
+
+```{r}
+pdf(file = paste(folder,"Figure8-Paypal Model Results.pdf"),height=7,width=8)
+#
+par(mfrow=c(2,2))
+acf(df_log_ret[,"PYPL"], main="Paypal", na.action = na.pass)
+acf(fitPypl$residual, main = "Paypal Residuals", na.action = na.pass)
+qqnorm(fitPypl$resid, datax = T, main="Paypal Residuals QQNorm") 
+qqline(fitPypl$resid, datax = T)
+plot(ts(fitPypl$resid),ylab="Residual",main="Paypal Residuals Time-Series")
+#
+graphics.off()
+
+par(mfrow=c(2,2))
+
+acf(df_log_ret[,"PYPL"], main="Paypal", na.action = na.pass)
+acf(fitPypl$residual, main = "Paypal Residuals", na.action = na.pass)
+qqnorm(fitPypl$resid, datax = T, main="Paypal Residuals QQNorm") 
+qqline(fitPypl$resid, datax = T)
+plot(ts(fitPypl$resid),ylab="Residual",main="Paypal Residuals Time-Series")
+```
+**Figure 8:** Paypal Training Model Validation
+
+Paypal ACF plots presented in figure **8** confirms that the residuals follow the same autocorrelation than the original dataset; in particular at lag 20 both ACF plots present an autocorrelation that crosses the lower test bound. This similarity makes the ARIMA(1,0,1) {i.e., ARMA(1,1)} a good model to be used for forecasting. 
+
+The QQnorm plot of Paypal residuals present heavy tails, a common characteristic of t-distributions. This behavior doesn't align with the expected normal distribution for residuals.
+
+The time-series plot of Paypal residuals shows some volatility; in particular around the 50th observation, between the 200th and 300th time observation, and between 450th and 500th time observation.
+
+
+```{r}
+pdf(file = paste(folder,"Figure9-Walmart Model Results.pdf"),height=7,width=8)
+#
+par(mfrow=c(2,2))
+acf(df_log_ret[,"WMT"], main="Walmart", na.action = na.pass)
+acf(fitWmt$residual, main = "Walmart Residuals", na.action = na.pass)
+qqnorm(fitWmt$resid, datax = T, main="Walmart Residuals QQNorm") 
+qqline(fitWmt$resid, datax = T)
+plot(ts(fitWmt$resid),ylab="Residual",main="Walmart Residuals Time-Series")
+#
+graphics.off()
+
+par(mfrow=c(2,2))
+
+acf(df_log_ret[,"WMT"], main="Walmart", na.action = na.pass)
+acf(fitWmt$residual, main = "Walmart Residuals", na.action = na.pass)
+qqnorm(fitWmt$resid, datax = T, main="Walmart Residuals QQNorm") 
+qqline(fitWmt$resid, datax = T)
+plot(ts(fitWmt$resid),ylab="Residual",main="Walmart Residuals Time-Series")
+```
+**Figure 9:** Walmart Training Model Validation
+
+Walmart ACF plots presented in figure **9** confirms that the residuals follow the same autocorrelation than the original dataset. This similarity makes the ARIMA(0,0,0) a good model to be used for forecasting. 
+
+The QQnorm plot of Walmart residuals present heavy tails, a common characteristic of t-distributions. This behavior doesn't align with the expected normal distribution for residuals. 
+
+The time-series plot for Walmart residuals shows some volatility; in particular between 50th and 100th time observations, and close to the 200th time observation.
+
+```{r}
+pdf(file = paste(folder,"Figure10-SP500 Model Results.pdf"),height=7,width=8)
+#
+par(mfrow=c(2,2))
+acf(df_log_ret[,"SP"], main="S&P 500", na.action = na.pass)
+acf(fitSp$residual, main = "S&P 500 Residuals", na.action = na.pass)
+qqnorm(fitSp$resid, datax = T, main="S&P 500 Residuals QQNorm") 
+qqline(fitSp$resid, datax = T)
+plot(ts(fitSp$resid),ylab="Residual",main="S&P 500 Residuals Time-Series")
+#
+graphics.off()
+
+par(mfrow=c(2,2))
+
+acf(df_log_ret[,"SP"], main="S&P 500", na.action = na.pass)
+acf(fitSp$residual, main = "S&P 500 Residuals", na.action = na.pass)
+qqnorm(fitSp$resid, datax = T, main="S&P 500 Residuals QQNorm") 
+qqline(fitSp$resid, datax = T)
+plot(ts(fitSp$resid),ylab="Residual",main="S&P 500 Residuals Time-Series")
+```
+**Figure 10:** S&P 500 Training Model Validation
+
+S&P 500 ACF plots presented in figure **10** confirms that the residuals follow the same autocorrelation than the original dataset; in particular at lag 12 both ACF plots present an autocorrelation that crosses the lower test bound. This similarity makes the ARIMA(0,0,0) a good model to be used for forecasting. 
+
+The QQnorm plot of S&P 500 residuals present heavy tails, a common characteristic of t-distributions. This behavior doesn't align with the expected normal distribution for residuals.
+
+The time-series plot of S&P 500 residuals shows some volatility; in particular around the 250th observation, and 500th time observation.
+
+```{r}
+pdf(file = paste(folder,"Figure11-Securities Residuals QQ Plot.pdf"),height=7,width=8)
+#
+par(mfrow=c(2,2))
+qqnorm(fitPayx$resid, datax = T, main="PayCheck Inc. Residuals") 
+qqline(fitPayx$resid, datax = T)
+qqnorm(fitPypl$resid, datax = T, main="Paypal Residuals") 
+qqline(fitPypl$resid, datax = T)
+qqnorm(fitWmt$resid, datax = T, main="Walmart Residuals") 
+qqline(fitWmt$resid, datax = T)
+qqnorm(fitSp$resid, datax = T, main="S&P 500 Residuals") 
+qqline(fitSp$resid, datax = T)
+#
+graphics.off()
+
+par(mfrow=c(2,2))
+qqnorm(fitPayx$resid, datax = T, main="PayCheck Inc. Residuals") 
+qqline(fitPayx$resid, datax = T)
+qqnorm(fitPypl$resid, datax = T, main="Paypal Residuals") 
+qqline(fitPypl$resid, datax = T)
+qqnorm(fitWmt$resid, datax = T, main="Walmart Residuals") 
+qqline(fitWmt$resid, datax = T)
+qqnorm(fitSp$resid, datax = T, main="S&P 500 Residuals") 
+qqline(fitSp$resid, datax = T)
+```
+**Figure 11:** QQnorm plots for PayCheck Inc., Paypal, Walmart and S&P 500
+
+Figure **11** allow us to observe heavy tails for all securities. However, S&P 500 seems to show the least amount of tail.
+
+
+
