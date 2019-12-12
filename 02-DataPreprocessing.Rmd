@@ -1,6 +1,8 @@
 ---
-title: "OR538 Final Project - Step 2: Data Pre-Processing"
-output: html_notebook
+title: 'OR538 Final Project - Step 2: Data Pre-Processing'
+output:
+  word_document: default
+  html_notebook: default
 ---
 
 # Data Pre-Processing
@@ -8,6 +10,7 @@ output: html_notebook
 The intent of this section is to perform the necessary pre-processing for the time series values and leverage data visualization techniques to show the transformations and validate key assumptions around the time-series.
 
 ```{r}
+pacman::p_load(xts)
 folder <- "/Users/angelsierra/ML_Project/OR538-FinalPrj/Figures/"
 pdf(file = paste(folder,"Figure1-Adjusted Price for Multiple Securities.pdf"),height=7,width=8)
 plot(as.xts(df_adj), main="Adjusted Price", legend.loc = "topleft")

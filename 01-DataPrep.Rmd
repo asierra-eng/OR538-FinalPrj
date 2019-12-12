@@ -1,6 +1,8 @@
 ---
-title: "OR538 Final Project - Step 1: Data Preparation"
-output: html_notebook
+title: 'OR538 Final Project - Step 1: Data Preparation'
+output:
+  word_document: default
+  html_notebook: default
 ---
 
 # Obtaining the data set
@@ -59,10 +61,12 @@ colnames(df_log_ret) <- symbols
 To properly share the information; in this section we will be consolidating all the data set information obtained and generated in a single csv file.
 
 ```{r}
+
 df_export <- data.frame(PAYX, diff(PAYX$PAYX.Adjusted), diff(log(PAYX$PAYX.Adjusted)),
                         PYPL, diff(PYPL$PYPL.Adjusted), diff(log(PYPL$PYPL.Adjusted)),
                         WMT, diff(WMT$WMT.Adjusted), diff(log(WMT$WMT.Adjusted)),
                         SP, diff(SP$SP.Adjusted), diff(log(SP$SP.Adjusted)))
+
 colnames(df_export) <- c("PAYX.Open", "PAYX.High", "PAYX.Low", "PAYX.Close", 
                          "PAYX.Volume","PAYX.Adjusted", "PAYX.Adj.Ret", "PAYX.Adj.Log.Ret",
                          "PYPL.Open", "PYPL.High", "PYPL.Low", "PYPL.Close",
@@ -71,5 +75,8 @@ colnames(df_export) <- c("PAYX.Open", "PAYX.High", "PAYX.Low", "PAYX.Close",
                          "WMT.Volume", "WMT.Adjusted","WMT.Adj.Ret", "WMT.Adj.Log.Ret",
                          "SP.Open", "SP.High", "SP.Low", "SP.Close",
                          "SP.Volume", "SP.Adjusted", "SP.Adj.Ret", "SP.Adj.Log.Ret")
+
+write.csv(df_export, 
+          "/Users/angelsierra/ML_Project/OR538-FinalPrj/OR538-portfolio-securities.csv")
 ```
 
